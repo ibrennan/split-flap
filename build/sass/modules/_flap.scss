@@ -1,0 +1,27 @@
+.flap {
+	background: red;
+	float: left;
+	height: 200px;
+	width: 120px;
+
+	.split {
+		background: green;
+		height: 50%;
+
+		&:first-child {
+			border-bottom: 2px solid red;
+		}
+
+		&:last-child {
+			background: yellow;
+		}
+		.next {
+
+		}
+
+		.current {
+
+		}
+	}
+
+}
