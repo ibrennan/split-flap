@@ -38,26 +38,36 @@ module.exports = function (grunt) {
 		watch: {
 			js: {
 				files: 'js/**',
-				tasks: ['copy'],
+				tasks: ['copy', 'notify:watch'],
 				options: {
 					interrupt: true
 				}
 			},
 			sass: {
 				files: 'sass/**',
-				tasks: ['compass', 'copy'],
+				tasks: ['compass', 'copy', 'notify:watch'],
 				options: {
 					interrupt: true
 				}
 			},
 			images: {
 				files: 'images/**',
-				tasks: ['copy'],
+				tasks: ['copy', 'notify:watch'],
 				options: {
 					interrupt: true
 				}
 			}
+		},
+
+		notify: {
+			watch: {
+				options: {
+					title: 'Build Complete',  // optional
+					message: 'All files have compiled and been moved', //required
+				}
+			}
 		}
+
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-compass');
@@ -66,6 +76,8 @@ module.exports = function (grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-copy');
 
-	grunt.registerTask('default', ['compass', 'copy']);
+	grunt.loadNpmTasks('grunt-notify');
+
+	grunt.registerTask('default', ['compass', 'copy', 'notify:watch']);
 
 };

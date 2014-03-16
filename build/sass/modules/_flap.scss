@@ -1,27 +1,36 @@
 .flap {
-	background: red;
+	background: black;
 	float: left;
 	height: 200px;
+	position: relative;
 	width: 120px;
+	-webkit-perspective: 1200;
 
-	.split {
+	&.animate div:first-child {
+		-webkit-transform: rotateX(-180deg);
+		-webkit-transform-style: preserve-3d;
+		-webkit-transform-origin: 50% 100%;
+		-webkit-transition: -webkit-transform $flip-speed ease;
+	}
+
+	div {
 		background: green;
-		height: 50%;
-
+		height: 100px;
+		position: absolute;
+		width: 120px;
+		
 		&:first-child {
+			background: pink;
 			border-bottom: 2px solid red;
+			top: 0;
+			z-index: 999;
 		}
 
 		&:last-child {
 			background: yellow;
-		}
-		.next {
-
+			top: 50%;
 		}
 
-		.current {
-
-		}
 	}
 
 }
