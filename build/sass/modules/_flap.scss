@@ -1,36 +1,28 @@
 .flap {
 	background: black;
 	float: left;
+	margin: 10px;
 	height: 200px;
 	position: relative;
 	width: 120px;
-	-webkit-perspective: 1200;
-
-	&.animate div:first-child {
-		-webkit-transform: rotateX(-180deg);
-		-webkit-transform-style: preserve-3d;
-		-webkit-transform-origin: 50% 100%;
-		-webkit-transition: -webkit-transform $flip-speed ease;
-	}
+	-webkit-perspective: 800;
 
 	div {
-		background: green;
 		height: 100px;
 		position: absolute;
 		width: 120px;
-		
-		&:first-child {
-			background: pink;
-			border-bottom: 2px solid red;
-			top: 0;
-			z-index: 999;
+		z-index: 9;
+
+		&.animate {
+			-webkit-transform: rotateX(-180deg);
+			-webkit-transform-style: preserve-3d;
+			-webkit-transform-origin: 50% 100%;
+			-webkit-transition: -webkit-transform $flip-speed ease;
 		}
 
-		&:last-child {
-			background: yellow;
+		&.complete {
 			top: 50%;
 		}
-
 	}
 
 }
