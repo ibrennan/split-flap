@@ -15,10 +15,10 @@ var application = {
 	config : {
 
 		// The speed at which the animation takes place
-		speed : 400,
+		speed : 250,
 
 		// The number of flaps to display on the screen
-		flaps : 20,
+		flaps : 30,
 
 		// These colours are flipped through before the final one is shown
 		baseColours : [ 
@@ -113,79 +113,62 @@ var application = {
 			colours = self.config.baseColours,
 			z = 99;
 
-		// BUG:
-		// The array unshift and push method is also being applied
-		// to self.config.baseColours. It's length increases. 
-		colours.unshift(colour);
-
-		colours.push($flap.css("backgroundColor"));
-
 		var html = template({
-			colours: colours
+			colours: colours,
+			last: $flap.css("backgroundColor"),
+			first: colour
 		});
 
         $flap.append(html).css("background");
 
-        setTimeout(function(){
+    	var $splits = $($flap.find(".split").get().reverse());
 
-        	var $splits = $($flap.find(".split").get().reverse());
-
-			$splits.each(function(key, value){
-				var $split = $(this);
-
-				setTimeout(function(){
-
-					$split.next().removeClass("animate").addClass("complete");
-
-					$split.addClass("animate").css("z-index", z + key);
-
-					if(key === $splits.length - 2){
-						// Finished
-
-						setTimeout(function(){
-
-							$splits.remove();
-
-						}, self.config.speed * 3);
-
-						var random = Math.round(Math.random()*self.config.flaps);
-
-						self.animateSplit($(".flap").eq(random), "green");
-
-					};
-
-				}, self.config.speed * key);
-
-			});
+		$splits.each(function(key, value){
+			var $split = $(this);
 
 			setTimeout(function(){
 
-				$flap.css("background", colour);
+				$split.next().removeClass("animate").addClass("complete");
 
-			}, self.config.speed);
+				if(key + 1 !== $splits.length){
 
-        },300);
+					$split.addClass("animate").css("z-index", z + key);
 
-	} // drop
+				}
+
+				setTimeout(function(){
+
+					$split.css("backgroundColor", $split.prev().css("backgroundColor"));
+
+				}, self.config.speed / 2);
+
+				if(key === $splits.length - 2){
+					// Finished
+
+					setTimeout(function(){
+
+						$splits.remove();
+
+					}, self.config.speed * 3);
+
+					var random = Math.round(Math.random()*self.config.flaps);
+
+					self.animateSplit($(".flap").eq(random), "green");
+
+				};
+
+			}, self.config.speed * key);
+
+		});
+
+		setTimeout(function(){
+
+			$flap.css("background", colour);
+
+		}, self.config.speed);
+
+	} // animateSplit
 
 };
 
 application.init();
-
-/*
-
-##     ## ######## ##       ########  ######## ########   ######  
-##     ## ##       ##       ##     ## ##       ##     ## ##    ## 
-##     ## ##       ##       ##     ## ##       ##     ## ##       
-######### ######   ##       ########  ######   ########   ######  
-##     ## ##       ##       ##        ##       ##   ##         ## 
-##     ## ##       ##       ##        ##       ##    ##  ##    ## 
-##     ## ######## ######## ##        ######## ##     ##  ######  
-
-*/
-
-Array.prototype.remove = function(from, to) {
-	var rest = this.slice((to || from) + 1 || this.length);
-	this.length = from < 0 ? this.length + from : from;
-	return this.push.apply(this, rest);
-};

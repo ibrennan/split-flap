@@ -18,9 +18,11 @@
 	</script>
 
 	<script id="split" type="text/x-handlebars-template">
+		<div class="split" style="background: {{ first }}"></div>
 		{{#each colours}}
 			<div class="split" style="background: {{ this }}"></div>
 		{{/each}}
+		<div class="split" style="background: {{ last }}"></div>
 	</script>
 
 	<script src="_includes/js/vendor/jquery.js"></script>
