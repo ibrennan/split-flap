@@ -15,7 +15,7 @@ var application = {
 	config : {
 
 		// The speed at which the animation takes place
-		speed : 250,
+		speed : 200,
 
 		// The number of flaps to display on the screen
 		flaps : 30,
@@ -27,7 +27,11 @@ var application = {
 			"#BDBBDA",
 			"#FDD5B9",
 			"#D7C5B8",
-			"#B5787D"
+			"#B5787D",
+			"#B5787D",
+			"#C2C2A6",
+			"#BDBBDA",
+			"#FDD5B9"
 		]
 
 	}, // config
@@ -119,7 +123,7 @@ var application = {
 			first: colour
 		});
 
-        $flap.append(html).css("background");
+        $flap.append(html);
 
     	var $splits = $($flap.find(".split").get().reverse());
 
@@ -134,7 +138,7 @@ var application = {
 
 					$split.addClass("animate").css("z-index", z + key);
 
-				}
+				};
 
 				setTimeout(function(){
 
@@ -163,7 +167,7 @@ var application = {
 
 		setTimeout(function(){
 
-			$flap.css("background", colour);
+			$flap.find(".static").css("background", colour);
 
 		}, self.config.speed);
 

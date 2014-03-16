@@ -1,5 +1,5 @@
 .flap {
-	background: black;
+	border-radius: 10px;
 	float: left;
 	margin: 10px;
 	height: 200px;
@@ -7,7 +7,9 @@
 	width: 120px;
 	-webkit-perspective: 800;
 
-	div {
+	div,
+	.static {
+		border-radius: 10px;
 		height: 100px;
 		position: absolute;
 		width: 120px;
@@ -21,7 +23,15 @@
 		}
 
 		&.complete {
-			top: 50%;
+			top: 51%;
+		}
+	}
+
+	.static {
+		box-shadow: 0 0 2px #888;
+
+		&.bottom {
+			top: 51%;
 		}
 	}
 

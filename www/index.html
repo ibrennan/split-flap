@@ -14,7 +14,10 @@
 	</div><!-- .container -->
 
 	<script id="flap" type="text/x-handlebars-template">
-		<div class="flap" style="background: {{colour}}"></div>
+		<div class="flap">
+			<div class="static" style="background: {{ colour }}"></div>
+			<div class="static bottom" style="background: {{ colour }}"></div>
+		</div>
 	</script>
 
 	<script id="split" type="text/x-handlebars-template">
