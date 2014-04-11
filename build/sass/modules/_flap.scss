@@ -1,38 +1,90 @@
+$animationTime: 0.4;
+$flapBorderRadius: 8px;
+$flapWidth: 60px;
+$flapHeight: 120px;
+
 .flap {
-	border-radius: 10px;
+	@include box-shadow(rgba(0,0,0,0.3) 0px 2px 7px);
+	-webkit-perspective: 150px;
+
+	background: green;
+	border-radius: $flapBorderRadius;
+	width: $flapWidth;
+	height: $flapHeight;
 	float: left;
-	margin: 10px;
-	height: 200px;
+	margin: 3px;
 	position: relative;
-	width: 120px;
-	-webkit-perspective: 800;
 
-	div,
-	.static {
-		border-radius: 10px;
-		height: 100px;
+	// By setting the content to our variable, we can then pass it through to the JS
+	// and use it within our timing
+	&:after {
+		content: "#{$animationTime}";
+		visibility: hidden;
+	}
+
+	.split {
+		height: 2px;
+		background: #dbdbdb;
+		width: 100%;
 		position: absolute;
-		width: 120px;
-		z-index: 9;
+		top: 50%;
+		margin-top: -1px;
+		z-index: 5;
+	}
 
-		&.animate {
-			-webkit-transform: rotateX(-180deg);
-			-webkit-transform-style: preserve-3d;
-			-webkit-transform-origin: 50% 100%;
-			-webkit-transition: -webkit-transform $flip-speed ease;
-		}
+	.bottom {
+		border-bottom-left-radius: $flapBorderRadius;
+		border-bottom-right-radius: $flapBorderRadius;
+		height: $flapHeight / 2;
+		width: $flapWidth;
+		background: orange;
+		bottom: 0;
+		position: absolute;
+	}
 
-		&.complete {
-			top: 51%;
+	.top {
+		border-radius: $flapBorderRadius;
+		border-radius: $flapBorderRadius;
+		height: $flapHeight;
+		width: $flapWidth;
+		background: orange;
+		position: absolute;
+		top: 0;
+		z-index: 2;
+
+		&.next {
+			-webkit-transform: rotate3d(1, 0, 0, -90deg);
+			background: green;
+			z-index: 4;
 		}
 	}
 
-	.static {
-		box-shadow: 0 0 2px #888;
-
-		&.bottom {
-			top: 51%;
+	&.trigger {
+		.top {
+			-webkit-transform: rotate3d(1, 0, 0, -90deg);
+			-webkit-transition: -webkit-transform #{$animationTime}s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+		}
+		.top.next {
+			-webkit-transform: rotate3d(1, 0, 0, -180deg);
+			-webkit-transition: -webkit-transform #{$animationTime - ($animationTime * 0.2)}s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+			-webkit-transition-delay: #{$animationTime}s
+		}
+		.top.next.bounce {
+			-webkit-transform: rotate3d(1, 0, 0, -170deg);
+			-webkit-transition: -webkit-transform #{$animationTime - ($animationTime / 4)}s cubic-bezier(0.165, 0.84, 0.44, 1);
 		}
 	}
 
+	&.complete {
+		.top {
+			-webkit-transform: rotate3d(1, 0, 0, -90deg);
+		}
+		.top.next {
+			-webkit-transform: rotate3d(1, 0, 0, -170deg);
+		}
+		.top.next.bounce {
+			-webkit-transform: rotate3d(1, 0, 0, -180deg);
+			-webkit-transition: -webkit-transform #{$animationTime - ($animationTime / 8)}s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+		}
+	}
 }

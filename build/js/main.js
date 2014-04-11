@@ -14,25 +14,8 @@ var application = {
 
 	config : {
 
-		// The speed at which the animation takes place
-		speed : 200,
-
-		// The number of flaps to display on the screen
-		flaps : 30,
-
-		// These colours are flipped through before the final one is shown
-		baseColours : [ 
-			"#B5787D",
-			"#C2C2A6",
-			"#BDBBDA",
-			"#FDD5B9",
-			"#D7C5B8",
-			"#B5787D",
-			"#B5787D",
-			"#C2C2A6",
-			"#BDBBDA",
-			"#FDD5B9"
-		]
+		animationTime : 0, // This is calculated and set within buildFlaps()
+		flapsTotal : 300
 
 	}, // config
 
@@ -52,8 +35,6 @@ var application = {
 		var self = this;
 
 		self.buildFlaps();
-
-		self.animateSplit($(".flap:first"), "orange");
 
 	}, // init
 
@@ -77,101 +58,111 @@ var application = {
 */
 
 	buildFlaps : function(){
-		var self = this,
-			template = Handlebars.compile($("#flap").html());
+		var self = this;
 
-		for(var i = 0; i < self.config.flaps; i++) {
+		for (var i = 0; i < self.config.flapsTotal; i++) {
+			
+			var source = $("#flap").html(),
+				template = Handlebars.compile(source),
+				html = template({
+					colour : "#b9b9b9"
+				});
 
-			var html = template({
-				colour: self.config.baseColours[Math.floor(Math.random() * self.config.baseColours.length)]
-			});
+			$(".container").append(html);
 
-	        $(".container").append(html);
+		};
 
-	    };
+		self.config.animationTime = parseFloat(window.getComputedStyle(document.querySelector('.flap'), ':after').getPropertyValue('content').replace(/["']/g, "")) * 1000;
+
+		self.switch($(".flap").eq(Math.round(Math.random()*self.config.flapsTotal)), self.randomColour());
+		
 
 	}, // buildFlaps
 
+
 /*
 
-   ###    ##    ## #### ##     ##    ###    ######## ######## 
-  ## ##   ###   ##  ##  ###   ###   ## ##      ##    ##       
- ##   ##  ####  ##  ##  #### ####  ##   ##     ##    ##       
-##     ## ## ## ##  ##  ## ### ## ##     ##    ##    ######   
-######### ##  ####  ##  ##     ## #########    ##    ##       
-##     ## ##   ###  ##  ##     ## ##     ##    ##    ##       
-##     ## ##    ## #### ##     ## ##     ##    ##    ######## 
- ######  ########  ##       #### ########                     
-##    ## ##     ## ##        ##     ##                        
-##       ##     ## ##        ##     ##                        
- ######  ########  ##        ##     ##                        
-      ## ##        ##        ##     ##                        
-##    ## ##        ##        ##     ##                        
- ######  ##        ######## ####    ##                        
+ ######  ##      ## #### ########  ######  ##     ## 
+##    ## ##  ##  ##  ##     ##    ##    ## ##     ## 
+##       ##  ##  ##  ##     ##    ##       ##     ## 
+ ######  ##  ##  ##  ##     ##    ##       ######### 
+      ## ##  ##  ##  ##     ##    ##       ##     ## 
+##    ## ##  ##  ##  ##     ##    ##    ## ##     ## 
+ ######   ###  ###  ####    ##     ######  ##     ## 
 
 */
 
-	animateSplit : function($flap, colour){
-		var self = this,
-			template = Handlebars.compile($("#split").html()),
-			colours = self.config.baseColours,
-			z = 99;
+	switch : function($element, colour){
+		var self = this;
 
-		var html = template({
-			colours: colours,
-			last: $flap.css("backgroundColor"),
-			first: colour
-		});
+		console.log(colour, $element);
 
-        $flap.append(html);
+		// Reset the element before we do anything
+		if($element.hasClass("complete")){
 
-    	var $splits = $($flap.find(".split").get().reverse());
+			$element.find(".top.original, .bottom").css("background",$element.find(".top.next").css("backgroundColor"));
 
-		$splits.each(function(key, value){
-			var $split = $(this);
+		};
+
+		$element.css("background", colour).find(".top.next").css("background", colour);
+
+		$element.addClass("trigger");
+
+		$element.find(".top.original").bind("transitionend", function(){
+
+			$element.find(".split").hide();
 
 			setTimeout(function(){
 
-				$split.next().removeClass("animate").addClass("complete");
+				$element.find(".split").show();
 
-				if(key + 1 !== $splits.length){
+			}, self.config.animationTime * 0.1);
 
-					$split.addClass("animate").css("z-index", z + key);
+			setTimeout(function(){
 
-				};
+				$element.find(".top.next").addClass("bounce");
 
 				setTimeout(function(){
 
-					$split.css("backgroundColor", $split.prev().css("backgroundColor"));
+					$element.removeClass("trigger").addClass("complete");
 
-				}, self.config.speed / 2);
+				}, self.config.animationTime * 0.2);
 
-				if(key === $splits.length - 2){
-					// Finished
+				var next = Math.round(Math.random()*self.config.flapsTotal);
 
-					setTimeout(function(){
+				self.switch($(".flap").eq(next), self.randomColour());
 
-						$splits.remove();
-
-					}, self.config.speed * 3);
-
-					var random = Math.round(Math.random()*self.config.flaps);
-
-					self.animateSplit($(".flap").eq(random), "green");
-
-				};
-
-			}, self.config.speed * key);
+			}, self.config.animationTime * 0.8);
 
 		});
 
-		setTimeout(function(){
+	}, // switch
 
-			$flap.find(".static").css("background", colour);
+/*
 
-		}, self.config.speed);
+########     ###    ##    ## ########   #######  ##     ## 
+##     ##   ## ##   ###   ## ##     ## ##     ## ###   ### 
+##     ##  ##   ##  ####  ## ##     ## ##     ## #### #### 
+########  ##     ## ## ## ## ##     ## ##     ## ## ### ## 
+##   ##   ######### ##  #### ##     ## ##     ## ##     ## 
+##    ##  ##     ## ##   ### ##     ## ##     ## ##     ## 
+##     ## ##     ## ##    ## ########   #######  ##     ## 
+ ######   #######  ##        #######  ##     ## ########   
+##    ## ##     ## ##       ##     ## ##     ## ##     ##  
+##       ##     ## ##       ##     ## ##     ## ##     ##  
+##       ##     ## ##       ##     ## ##     ## ########   
+##       ##     ## ##       ##     ## ##     ## ##   ##    
+##    ## ##     ## ##       ##     ## ##     ## ##    ##   
+ ######   #######  ########  #######   #######  ##     ##  
 
-	} // animateSplit
+*/
+
+	randomColour : function(){
+		// Returns a random hex colour value
+
+		return '#'+Math.floor(Math.random()*16777215).toString(16);
+
+	} // randomColour
 
 };
 

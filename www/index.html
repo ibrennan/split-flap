@@ -9,23 +9,17 @@
 
 	<div class="container">
 
-		
 
 	</div><!-- .container -->
 
 	<script id="flap" type="text/x-handlebars-template">
 		<div class="flap">
-			<div class="static" style="background: {{ colour }}"></div>
-			<div class="static bottom" style="background: {{ colour }}"></div>
+			<div class="split"></div>
+			<div class="top original" style="background: {{colour}}"></div>
+			<div class="top next"></div>
+			<div class="bottom" style="background: {{colour}}"
+			></div>
 		</div>
-	</script>
-
-	<script id="split" type="text/x-handlebars-template">
-		<div class="split" style="background: {{ first }}"></div>
-		{{#each colours}}
-			<div class="split" style="background: {{ this }}"></div>
-		{{/each}}
-		<div class="split" style="background: {{ last }}"></div>
 	</script>
 
 	<script src="_includes/js/vendor/jquery.js"></script>
